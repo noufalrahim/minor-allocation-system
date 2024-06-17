@@ -1,4 +1,3 @@
-import { db } from '@/DB/db';
 import ConfirmAllotment from '@/components/ConfirmAllotment';
 import DetailsCard from '@/components/DetailsCard';
 import DragAndDrop from '@/components/DragAndDrop';
@@ -141,7 +140,7 @@ export default function Allotment() {
     }
 
     return (
-        <div className='bg-[#1A202C]'>
+        <div className={`dark:bg-[#1A202C]`}>
             <Navbar />
             <div className='min-h-screen flex flex-col items-center'>
                 <div className='my-10'>

@@ -17,7 +17,7 @@ export default function ConfirmAllotment({
 }: ConfirmAllotmentProps) {
 
     const notify = () => toast("Allotment Confirmed!", {
-        position: "bottom-right",
+        position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -37,7 +37,7 @@ export default function ConfirmAllotment({
 
     return (
         <>
-            <div className="h-96 w-1/3 bg-[#1F2937] flex flex-col">
+            <div className="h-96 w-1/3 dark:bg-[#1F2937] bg-[#A4B8FF] flex flex-col">
                 <div className="flex-grow overflow-y-auto">
                     <div className="flex flex-col gap-4 my-5">
                         {

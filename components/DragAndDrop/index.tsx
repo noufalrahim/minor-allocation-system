@@ -70,9 +70,9 @@ export default function DragAndDrop({
     }
 
     return (
-        <div className="bg-[#1A202C] min-h-screen p-4 flex-row flex justify-center gap-10 w-[55rem]">
+        <div className={`dark:bg-[#1A202C] p-4 flex-row flex justify-center gap-10 w-[55rem] min-h-[35rem]`}>
             <div
-                className="bg-[#1F2937] p-4 h-96 text-white w-[25rem] overflow-y-auto w-1/2 shadow-xl"
+                className="dark:bg-[#1F2937] bg-[#A4B8FF] p-2 h-96 text-white w-[25rem] overflow-y-auto w-1/2 shadow-xl"
                 onDrop={handleOnDrop}
                 onDragOver={handleDragOver}
             >
@@ -91,18 +91,18 @@ export default function DragAndDrop({
                     ))
                 ) : (
                     <div className="flex justify-center items-center h-full">
-                        <p className="text-[#808080] text-center italic align-middle">
+                        <p className="dark:text-[#808080] text-white text-center italic align-middle">
                             Drop your courses here
                         </p>
                     </div>
                 )}
             </div>
             <div className="w-1/2 h-96">
-                <div className="flex flex-col bg-gray-800 h-96 overflow-y-auto shadow-xl">
+                <div className="flex flex-col dark:bg-gray-800 bg-[#A4B8FF] h-96 overflow-y-auto shadow-xl">
                     {allCourses.map((widget: any, index: any) => (
                         <div
                             key={index}
-                            className="bg-[#1F2937] px-2 py-2 text-white cursor-pointer"
+                            className="dark:bg-[#1F2937] bg-[#A4B8FF] px-2 py-2 text-white cursor-pointer"
                             draggable
                             onDragStart={(e) => handleOnDragStart(e, widget, index)}
                         >
@@ -111,7 +111,7 @@ export default function DragAndDrop({
                     ))}
                     {allCourses.length === 0 && (
                         <div className="flex justify-center items-center h-full">
-                            <p className="text-[#808080] text-center italic align-middle">
+                            <p className="dark:text-[#808080] text-white text-center italic align-middle">
                                 No courses left
                             </p>
                         </div>

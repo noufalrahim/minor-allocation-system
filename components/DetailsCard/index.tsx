@@ -27,7 +27,7 @@ export default function DetailsCard(
     ])
 
     return (
-        <div className="bg-[#1F2937] h-80 px-20 flex flex-col rounded-lg text-white shadow-lg w-[60rem]">
+        <div className="dark:bg-[#1F2937] bg-[#D4DDFF] h-80 px-20 flex flex-col rounded-lg text-white shadow-lg w-[60rem]">
             <div className="flex flex-row justify-between items-center h-full mt-5">
                 <div className="justify-around items-start flex h-full flex-col">
                 {

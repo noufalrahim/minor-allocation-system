@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import { useState } from "react";
+import React, { useState } from "react";
 
 export default function Home() {
   const [coursesList, setCoursesList] = useState([
@@ -234,7 +234,7 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-[#1A202C]">
+    <div className={`dark:bg-[#1A202C] bg-white`}>
       <Navbar />
       <div className="text-center items-center flex min-h-screen justify-center text-white">
         Home Page

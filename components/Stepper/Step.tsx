@@ -8,9 +8,9 @@ interface StepProps {
 export default function Step({ number, isActive }: StepProps) {
     return (
         <div
-            className={`relative flex-shrink-0 w-12 h-12 mx-2 bg-${isActive ? '[#171A23]' : '[#1F2937]'}  rounded-full flex items-center justify-center`}
+            className={`relative flex-shrink-0 w-12 h-12 mx-2 ${isActive ? 'dark:bg-[#171A23] bg-[#A4B8FF]' : 'dark:bg-[#1F2937] bg-[#D4DDFF]'}  rounded-full flex items-center justify-center`}
         >
-            <span className='text-white'>{number}</span>
+            <span className='dark:text-white text-black'>{number}</span>
         </div>
     )
 }
