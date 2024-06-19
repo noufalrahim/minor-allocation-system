@@ -3,6 +3,8 @@ import LoadingSpinner from "../LoadingSpinner";
 import AllotmentCard from "../Cards/AllotmentCard";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios";
+import { loggedInUser } from "@/AppConstants";
 
 interface ConfirmAllotmentProps {
     loading: boolean;
@@ -16,7 +18,7 @@ export default function ConfirmAllotment({
     selectedCourses
 }: ConfirmAllotmentProps) {
 
-    const notify = () => toast("Allotment Confirmed!", {
+    const confirmNotify = () => toast("Allotment Confirmed!", {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -26,12 +28,41 @@ export default function ConfirmAllotment({
         progress: undefined,
     });
 
-    const handleConfirm = () => {
+    const declineNotify = () => toast.error("Allotment Failed!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
+
+    const handleConfirm = async () => {
         setLoading(true);
-        setTimeout(() => {
+        try{
+            const response = await axios.patch(`https://minor-nitc-server.onrender.com/students/student/${loggedInUser}/choices`, {
+                choices: selectedCourses.map(course => course._id)
+            });
+            console.log(response);
+            if(response.status === 200 && response.data){
+                setLoading(false);
+                setTimeout(() => {
+                    confirmNotify();
+                }, 300);
+            }else{
+                setLoading(false);
+                setTimeout(() => {
+                    declineNotify();
+                }, 300);
+
+            }
+        }
+        catch(error){
+            console.log(error);
             setLoading(false);
-            notify();
-        }, 2000);
+            declineNotify();
+        }
     }
 
 

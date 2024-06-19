@@ -1,10 +1,13 @@
+import { loggedInUser } from '@/AppConstants';
 import ConfirmAllotment from '@/components/ConfirmAllotment';
 import DetailsCard from '@/components/DetailsCard';
 import DragAndDrop from '@/components/DragAndDrop';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import Stepper from '@/components/Stepper';
-import { useState } from 'react';
+import axios from 'axios';
+import React, { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 export default function Allotment() {
@@ -13,97 +16,82 @@ export default function Allotment() {
 
     const [step, setStep] = useState(0);
     const [loading, setLoading] = useState(false);
-    const [activeStep, setActiveStep] = useState(1);
+    const [activeStep, setActiveStep] = useState(0);
+
+    const informNotify = () => toast.info("Please select atleast one course!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
 
     const [allCourses, setAllCourses] = useState([
-        {
-            name: 'Minor 1',
-            code: 'CS0019',
-            credits: 4,
-            department: 'CSE'
-        },
-        {
-            name: 'Minor 2',
-            code: 'CS0019',
-            credits: 4,
-            department: 'CSE'
-        },
-        {
-            name: 'Minor 3',
-            code: 'CS0019',
-            credits: 4,
-            department: 'CSE'
-        },
-        {
-            name: 'Minor 4',
-            code: 'CS0019',
-            credits: 4,
-            department: 'CSE'
-        },
-        {
-            name: 'Minor 5',
-            code: 'CS0019',
-            credits: 4,
-            department: 'CSE'
-        },
-        {
-            name: 'Minor 6',
-            code: 'CS0019',
-            credits: 4,
-            department: 'CSE'
-        },
-        {
-            name: 'Minor 7',
-            code: 'CS0019',
-            credits: 4,
-            department: 'CSE'
-        },
-        {
-            name: 'Minor 8',
-            code: 'CS0019',
-            credits: 4,
-            department: 'CSE'
-        },
-        {
-            name: 'Minor 9',
-            code: 'CS0019',
-            credits: 4,
-            department: 'CSE'
-        },
-        {
-            name: 'Minor 10',
-            code: 'CS0019',
-            credits: 4,
-            department: 'CSE'
-        }
+        // {
+        //     id: "",
+        //     name: 'Minor 1',
+        //     code: 'CS0019',
+        //     credits: 4,
+        //     department: 'CSE'
+        // },  
     ]);
 
-    const [selectedCourses, setSelectedCourses] = useState([
-        {
-            name: 'Minor 1',
-            code: 'CS0019',
-            credits: 4,
-            department: 'CSE'
-        },
-        {
-            name: 'Minor 2',
-            code: 'CS0019',
-            credits: 4,
-            department: 'CSE'
-        },
-        {
-            name: 'Minor 3',
-            code: 'CS0019',
-            credits: 4,
-            department: 'CSE'
-        },
-        {
-            name: 'Minor 4',
-            code: 'CS0019',
-            credits: 4,
-            department: 'CSE'
+    const [isUserChosenAllotment, setIsUserChosenAllotment] = useState(false);
+
+    React.useEffect(() => {
+        const fetchCoursesData = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get('/api/fetchCoursesData');
+                const data = response.data;
+                console.log(data);
+                setAllCourses(data);
+                setLoading(false);
+            }
+            catch (error) {
+                console.log(error);
+            }
+            setLoading(false);
         }
-    ]);
+        fetchCoursesData();
+    }, []);
+
+    React.useEffect(() => {
+        const fetchUserData = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get(`/api/fetchUserData?id=${loggedInUser}`);
+                const data = response.data;
+                console.log(data);
+                if (data.choices.length > 0) {
+                    setIsUserChosenAllotment(true);
+                } else {
+                    setIsUserChosenAllotment(false);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchUserData();
+    }, []);
+
+    console.log(allCourses);
+
+    const [selectedCourses, setSelectedCourses] = useState([]);
+
+    console.log(selectedCourses);
+
+    const handleNext = () => {
+        if (selectedCourses.length === 0) {
+            informNotify();
+        }
+        else {
+            setActiveStep(activeStep + 1);
+            setStep(step + 1);
+        }
+    }
 
     const renderComponent = () => {
         switch (step) {
@@ -115,8 +103,10 @@ export default function Allotment() {
                         <DragAndDrop
                             allCourses={allCourses}
                             setAllCourses={setAllCourses}
+                            widgets={selectedCourses}
+                            setWidgets={(value: any) => setSelectedCourses(value)}
                         />
-                        <Footer handleNext={handleConfirm} loading={loading}/>
+                        <Footer handleNext={handleNext} loading={loading} />
                     </>
                 )
             case 2:
@@ -143,11 +133,24 @@ export default function Allotment() {
         <div className={`dark:bg-[#1A202C]`}>
             <Navbar />
             <div className='min-h-screen flex flex-col items-center'>
-                <div className='my-10'>
-                    <Stepper activeStep={activeStep} />
-                </div>
-                {renderComponent()}
+
+                {
+                    isUserChosenAllotment ? (
+                            <div className='w-full min-h-screen pb-20 flex items-center justify-center'>
+                                <p className='dark:text-white text-black'>You have already chosen your allotment!</p>
+                            </div>
+                    ) :
+                        <>
+                            <div className='my-10'>
+                                <Stepper activeStep={activeStep} />
+                            </div>
+                            {
+                                renderComponent()
+                            }
+                        </>
+                }
             </div>
+            <ToastContainer />
         </div>
     )
 }
