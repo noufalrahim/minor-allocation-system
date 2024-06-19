@@ -18,24 +18,6 @@ export default function DetailsCard(
 
     const [isLoading, setIsLoading] = React.useState(true);
 
-    // const [studentData, setStudentData] = React.useState({
-    //     id: "",
-    //     name: "",
-    //     regNo: "",
-    //     email: "",
-    //     programName: "",
-    //     semester: "",
-    //     sectionBatchName: "",
-    //     faName: "",
-    //     faEmail: "",
-    //     cgpa: 0,
-    //     sgpaS2: 0,
-    //     sgpaS1: 0,
-    //     choices: [],
-    //     createdAt: new Date(),
-    //     updatedAt: new Date(),
-    // })
-
     const [fields, setFields] = React.useState([
         { label: "Name", value: "" },
         { label: "Roll No", value: "" },

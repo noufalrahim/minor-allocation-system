@@ -3,6 +3,7 @@ import ConfirmAllotment from '@/components/ConfirmAllotment';
 import DetailsCard from '@/components/DetailsCard';
 import DragAndDrop from '@/components/DragAndDrop';
 import Footer from '@/components/Footer';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import Navbar from '@/components/Navbar';
 import Stepper from '@/components/Stepper';
 import axios from 'axios';
@@ -39,6 +40,7 @@ export default function Allotment() {
     ]);
 
     const [isUserChosenAllotment, setIsUserChosenAllotment] = useState(false);
+    const [userDataLoading, setUserDataLoading] = useState(false);
 
     React.useEffect(() => {
         const fetchCoursesData = async () => {
@@ -60,7 +62,7 @@ export default function Allotment() {
 
     React.useEffect(() => {
         const fetchUserData = async () => {
-            setLoading(true);
+            setUserDataLoading(true);
             try {
                 const response = await axios.get(`/api/fetchUserData?id=${loggedInUser}`);
                 const data = response.data;
@@ -70,10 +72,13 @@ export default function Allotment() {
                 } else {
                     setIsUserChosenAllotment(false);
                 }
+                setUserDataLoading(false);
             } catch (error) {
+                setUserDataLoading(false);
                 console.error(error);
             }
         }
+        
         fetchUserData();
     }, []);
 
@@ -129,25 +134,34 @@ export default function Allotment() {
         }, 1000);
     }
 
+    console.log(userDataLoading);
+
     return (
         <div className={`dark:bg-[#1A202C]`}>
             <Navbar />
             <div className='min-h-screen flex flex-col items-center'>
-
                 {
                     isUserChosenAllotment ? (
-                            <div className='w-full min-h-screen pb-20 flex items-center justify-center'>
-                                <p className='dark:text-white text-black'>You have already chosen your allotment!</p>
-                            </div>
+                        <div className='w-full min-h-screen pb-20 flex items-center justify-center'>
+                            <p className='dark:text-white text-black'>You have already chosen your allotment!</p>
+                        </div>
                     ) :
-                        <>
-                            <div className='my-10'>
-                                <Stepper activeStep={activeStep} />
-                            </div>
-                            {
-                                renderComponent()
-                            }
-                        </>
+                        (
+                            userDataLoading ? (
+                                <div className='w-full min-h-screen pb-20 flex items-center justify-center'>
+                                    <LoadingSpinner />
+                                </div>
+                            ) : (
+                                <>
+                                    <div className='my-10'>
+                                        <Stepper activeStep={activeStep} />
+                                    </div>
+                                    {
+                                        renderComponent()
+                                    }
+                                </>
+                            )
+                        )
                 }
             </div>
             <ToastContainer />
