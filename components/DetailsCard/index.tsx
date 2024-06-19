@@ -18,23 +18,23 @@ export default function DetailsCard(
 
     const [isLoading, setIsLoading] = React.useState(true);
 
-    const [studentData, setStudentData] = React.useState({
-        id: "",
-        name: "",
-        regNo: "",
-        email: "",
-        programName: "",
-        semester: "",
-        sectionBatchName: "",
-        faName: "",
-        faEmail: "",
-        cgpa: 0,
-        sgpaS2: 0,
-        sgpaS1: 0,
-        choices: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    })
+    // const [studentData, setStudentData] = React.useState({
+    //     id: "",
+    //     name: "",
+    //     regNo: "",
+    //     email: "",
+    //     programName: "",
+    //     semester: "",
+    //     sectionBatchName: "",
+    //     faName: "",
+    //     faEmail: "",
+    //     cgpa: 0,
+    //     sgpaS2: 0,
+    //     sgpaS1: 0,
+    //     choices: [],
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    // })
 
     const [fields, setFields] = React.useState([
         { label: "Name", value: "" },
@@ -54,7 +54,7 @@ export default function DetailsCard(
             const response = await axios.get(`/api/fetchUserData?id=${loggedInUser}`);
             const data = response.data;
             console.log(data);
-            setStudentData(data);
+            // setStudentData(data);
             setFields([
                 { label: "Name", value: data.name },
                 { label: "Roll No", value: data.regNo },
