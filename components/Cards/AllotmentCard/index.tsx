@@ -1,6 +1,5 @@
 import React from 'react'
-import { FaArrowDown, FaArrowLeft, FaArrowRight, FaArrowUp, FaClosedCaptioning, FaCross } from 'react-icons/fa';
-import { FaX } from 'react-icons/fa6';
+import { FaArrowDown, FaArrowLeft, FaArrowRight, FaArrowUp } from 'react-icons/fa';
 
 interface AllotmentCardProps {
     course: {
