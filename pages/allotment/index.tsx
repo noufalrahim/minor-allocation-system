@@ -30,6 +30,18 @@ export default function Allotment() {
         progress: undefined,
     });
 
+    const [studentData, setStudentData] = useState({
+        name: '',
+        regNo: '',
+        faName: '',
+        email: '',
+        programName: '',
+        semester: '',
+        cgpa: '',
+        sgpaS1: '',
+        sgpaS2: ''
+    });
+
     const [allCourses, setAllCourses] = useState([
         // {
         //     id: "",
@@ -41,62 +53,62 @@ export default function Allotment() {
     ]);
 
     const [isUserChosenAllotment, setIsUserChosenAllotment] = useState(false);
-    const [userDataLoading, setUserDataLoading] = useState(false);
     const [userAlloted, setUserAlloted] = useState({
         isAlloted: false,
         result: ''
     });
+    const [isInititalRender, setIsInitialRender] = useState(true);
 
-    React.useEffect(() => {
-        const fetchCoursesData = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get('/api/fetchCoursesData');
-                const data = response.data;
-                console.log(data);
-                setAllCourses(data);
-                setLoading(false);
+    const fetchUserData = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`/api/fetchUserData?id=${loggedInUser}`);
+            const data = response.data;
+            if (data.choices.length > 0) {
+                setIsUserChosenAllotment(true);
+            } else {
+                setIsUserChosenAllotment(false);
             }
-            catch (error) {
-                console.log(error);
+            console.log(data.enrolled);
+            if (data.enrolled != -1) {
+                setUserAlloted({
+                    isAlloted: true,
+                    result: data.enrolled
+                });
+            }
+            else {
+                setUserAlloted({
+                    isAlloted: false,
+                    result: 'none'
+                });
             }
             setLoading(false);
+            setStudentData(data);
+        } catch (error) {
+            setLoading(false);
+            console.error(error);
         }
-        fetchCoursesData();
-    }, []);
+    }
+
+    const fetchCoursesData = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get('/api/fetchCoursesData');
+            const data = response.data;
+            console.log(data);
+            setAllCourses(data);
+            setLoading(false);
+        }
+        catch (error) {
+            setLoading(false);
+            console.log(error);
+        }
+    }
 
     React.useEffect(() => {
-        const fetchUserData = async () => {
-            setUserDataLoading(true);
-            try {
-                const response = await axios.get(`/api/fetchUserData?id=${loggedInUser}`);
-                const data = response.data;
-                if (data.choices.length > 0) {
-                    setIsUserChosenAllotment(true);
-                } else {
-                    setIsUserChosenAllotment(false);
-                }
-                setUserDataLoading(false);
-                console.log(data.enrolled);
-                if (data.enrolled != -1) {
-                    setUserAlloted({
-                        isAlloted: true,
-                        result: data.enrolled
-                    });
-                }
-                else {
-                    setUserAlloted({
-                        isAlloted: true,
-                        result: '6672407940e410a76494e1ef'
-                    });
-                }
-            } catch (error) {
-                setUserDataLoading(false);
-                console.error(error);
-            }
-        }
-
+        fetchCoursesData();
         fetchUserData();
+        setIsInitialRender(false);
     }, []);
 
     const [allotedCourse, setAllotedCourse] = useState({
@@ -110,19 +122,18 @@ export default function Allotment() {
         schedule: '',
     });
 
-    const [allotedCourseLoading, setAllotedCourseLoading] = useState(false);
 
     const fetchAllotedCourse = async () => {
-        setAllotedCourseLoading(true);
+        setLoading(true);
         try {
             const response = await axios.get(`https://minor-nitc-server.onrender.com/minors/minor/${userAlloted.result}`);
             const data = response.data;
             console.log(data);
-            setAllotedCourseLoading(false);
             setAllotedCourse(data);
+            setLoading(false);
         }
         catch (error) {
-            setAllotedCourseLoading(false);
+            setLoading(false);
             console.error(error);
         }
     }
@@ -132,8 +143,6 @@ export default function Allotment() {
             fetchAllotedCourse();
         }
     }, [userAlloted]);
-
-    console.log(allCourses);
 
     const [selectedCourses, setSelectedCourses] = useState([]);
 
@@ -152,7 +161,14 @@ export default function Allotment() {
     const renderComponent = () => {
         switch (step) {
             case 0:
-                return <DetailsCard handleConfirm={handleConfirm} loading={loading} />
+                return (
+                    <DetailsCard 
+                        handleConfirm={handleConfirm} 
+                        loading={loading} 
+                        setLoading={(value: boolean) => setLoading(value)} 
+                        studentData={studentData}
+                    />
+                )
             case 1:
                 return (
                     <>
@@ -185,9 +201,8 @@ export default function Allotment() {
         }, 1000);
     }
 
-    console.log(userDataLoading);
 
-    if(userDataLoading || allotedCourseLoading || loading){
+    if (loading || isInititalRender) {
         return (
             <div className={`dark:bg-[#1A202C]`}>
                 <Navbar />
@@ -198,38 +213,53 @@ export default function Allotment() {
         )
     }
 
+    const renderItem = () => {
+        if (userAlloted.isAlloted && !loading) {
+            return (
+                <div className='max-w-2xl mx-5 min-h-screen pb-20 flex flex-col gap-4 items-center justify-center'>
+                    <p className='text-lg dark:text-white text-black text-center'>
+                        Congratulations!<br />
+                        You have been alloted to the following course:</p>
+                    <CoursesCard course={allotedCourse} />
+                </div>
+            )
+        } else {
+            if (isUserChosenAllotment && !loading) {
+                return (
+                    <div className='w-full min-h-screen pb-20 flex items-center justify-center'>
+                        <p className='dark:text-white text-black'>You have already chosen your allotment!</p>
+                    </div>
+                )
+            }
+            else if(!loading) {
+                return (
+                    <>
+                        <div className='my-10'>
+                            <Stepper activeStep={activeStep} />
+                        </div>
+                        {
+                            renderComponent()
+                        }
+                    </>
+                )
+            }
+        }
+    }
+
     return (
         <div className={`dark:bg-[#1A202C]`}>
             <Navbar />
+            <h1 className='text-white'>f'jqi
+                wfpqwofp
+                oqjw
+                f[ojwq
+                f[ojqw[fj[qwo
+                fjwq[f[wj[f
+                qwpfqw]pf[pw[wqj[fopjqw[fjqw[fpjqw]]]]]]]]]]]]
+            </h1>
             <div className='min-h-screen flex flex-col items-center'>
                 {
-                        !userAlloted.isAlloted ? (
-                                <div className='max-w-2xl mx-5 min-h-screen pb-20 flex flex-col gap-4 items-center justify-center'>
-                                    <p className='text-lg dark:text-white text-black text-center'>
-                                        Congratulations!<br />
-                                        You have been alloted to the following course:</p>
-                                    <CoursesCard course={allotedCourse} />
-                                </div>
-                        ) :
-                        (
-                            !isUserChosenAllotment ? (
-                                <div className='w-full min-h-screen pb-20 flex items-center justify-center'>
-                                    <p className='dark:text-white text-black'>You have already chosen your allotment!</p>
-                                </div>
-                            ) :
-                                (
-                                     (
-                                        <>
-                                            <div className='my-10'>
-                                                <Stepper activeStep={activeStep} />
-                                            </div>
-                                            {
-                                                renderComponent()
-                                            }
-                                        </>
-                                    )
-                                )
-                        )
+                    renderItem()
                 }
             </div>
             <ToastContainer />
