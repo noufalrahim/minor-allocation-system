@@ -17,7 +17,7 @@ export default function Allotment() {
 
 
     const [step, setStep] = useState(0);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [activeStep, setActiveStep] = useState(0);
 
     const informNotify = () => toast.info("Please select atleast one course!", {
@@ -81,11 +81,11 @@ export default function Allotment() {
                     result: 'none'
                 });
             }
-            setLoading(false);
             setStudentData(data);
         } catch (error) {
-            setLoading(false);
             console.error(error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -96,11 +96,11 @@ export default function Allotment() {
             const data = response.data;
             console.log(data);
             setAllCourses(data);
-            setLoading(false);
         }
         catch (error) {
-            setLoading(false);
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -159,6 +159,7 @@ export default function Allotment() {
     const renderComponent = () => {
         switch (step) {
             case 0:
+                if(studentData === null) return (<LoadingSpinner />);
                 return (
                     <DetailsCard 
                         handleConfirm={handleConfirm} 
