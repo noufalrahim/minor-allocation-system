@@ -164,8 +164,6 @@ export default function Allotment() {
                 return (
                     <DetailsCard 
                         handleConfirm={handleConfirm} 
-                        loading={loading} 
-                        setLoading={(value: boolean) => setLoading(value)} 
                         studentData={studentData}
                     />
                 )
