@@ -68,7 +68,7 @@ export default function ConfirmAllotment({
 
     return (
         <>
-            <div className="h-96 w-1/3 dark:bg-[#1F2937] bg-[#A4B8FF] flex flex-col">
+            <div className="min-h-full h-96 w-10/12 lg:w-1/3 xl:w-1/3 md:w-1/3 xl:w-1/3 2xl:w-1/3 dark:bg-[#1F2937] bg-[#A4B8FF] flex flex-col">
                 <div className="flex-grow overflow-y-auto">
                     <div className="flex flex-col gap-4 my-5">
                         {

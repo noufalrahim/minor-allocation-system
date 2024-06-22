@@ -84,9 +84,9 @@ export default function DragAndDrop({
     }
 
     return (
-        <div className={`dark:bg-[#1A202C] p-4 flex-row flex justify-center gap-10 w-[55rem] min-h-[35rem]`}>
+        <div className={`dark:bg-[#1A202C] p-4 flex-col lg:flex-row md:flex-row xl:flex-row 2xl:flex-row flex justify-center gap-10 min-h-[35rem] h-full w-full lg:w-[55rem] xl:w-w-[55rem] md:w-[55rem] 2xl:w-[55rem]`}>
             <div
-                className="w-1/2 h-96"
+                className="w-full min-h-96 h-full"
                 onDrop={handleOnDrop}
                 onDragOver={handleDragOver}
             >
@@ -126,7 +126,7 @@ export default function DragAndDrop({
                 </div>
                 {
                     widgets.length > 0 && (
-                        <div className="flex justify-center items-center mt-2">
+                        <div className="flex justify-center items-center my-5">
                             <button
                                 className="dark:bg-[#1F2937] bg-[#A4B8FF] text-white px-4 py-1 rounded-md"
                                 onClick={() => {
@@ -141,7 +141,7 @@ export default function DragAndDrop({
                 }
             </div>
             <div
-                className="w-1/2 h-96"
+                className="w-full min-h-96 h-full mb-20" 
                 onDrop={handleCourseDrop}
                 onDragOver={handleDragOver}
             >

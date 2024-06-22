@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaArrowLeft, FaArrowRight, FaClosedCaptioning, FaCross } from 'react-icons/fa';
+import { FaArrowDown, FaArrowLeft, FaArrowRight, FaArrowUp, FaClosedCaptioning, FaCross } from 'react-icons/fa';
 import { FaX } from 'react-icons/fa6';
 
 interface AllotmentCardProps {
@@ -11,28 +11,47 @@ interface AllotmentCardProps {
     };
     showLeftIcon?: boolean;
     showRightIcon?: boolean;
-    showCloseIcon?: boolean;
     onLeftIconClick?: () => void;
     onRightIconClick?: () => void;
 }
 
 export default function AllotmentCard({
     course,
-    showCloseIcon,
     showLeftIcon,
     showRightIcon,
     onLeftIconClick,
     onRightIconClick,
 }: AllotmentCardProps) {
+
+    const [windowWidth, setWindowWidth] = React.useState<number>(window.innerWidth);
+
+    React.useEffect(() => {
+        const handleResize = () => {
+            console.log(window.innerWidth);
+            setWindowWidth(window.innerWidth);
+        }
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [windowWidth])
+
     return (
         <div className={`p-2 dark:bg-[#1A202C] bg-[#D4DDFF] mx-5 px-2 flex flex-row gap-4`}>
             {
                 showLeftIcon && (
-                    <button className="">
-                        <FaArrowLeft
-                            className='dark:text-white text-black'
-                            onClick={onLeftIconClick}
-                        />
+                    <button>
+                       {
+                            windowWidth > 766 ? (
+                                 <FaArrowLeft
+                                      className='dark:text-white text-black'
+                                      onClick={onLeftIconClick}
+                                 />
+                            ) : (
+                                 <FaArrowUp
+                                      className='dark:text-white text-black'
+                                      onClick={onLeftIconClick}
+                                 />
+                            )
+                       }
                     </button>
                 )
             }
@@ -46,10 +65,19 @@ export default function AllotmentCard({
                 {
                     showRightIcon && (
                         <button className="">
-                            <FaArrowRight
-                                className='dark:text-white text-black'
-                                onClick={onRightIconClick}
-                            />
+                            {
+                                windowWidth > 766 ? (
+                                    <FaArrowRight
+                                        className='dark:text-white text-black'
+                                        onClick={onRightIconClick}
+                                    />
+                                ) : (
+                                    <FaArrowDown
+                                        className='dark:text-white text-black'
+                                        onClick={onRightIconClick}
+                                    />
+                                )
+                            }
                         </button>
                     )
                 }

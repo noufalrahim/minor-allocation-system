@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { db } from '../../DB/db'
 import axios from "axios";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import CoursesCard from "@/components/Cards/CoursesCard";
 
 export default function Courses() {
     const [coursesList, setCoursesList] = useState([
@@ -53,21 +54,12 @@ export default function Courses() {
     return (
         <div className={`dark:bg-[#1A202C]`}>
             <Navbar />
-            <div className="flex justify-center min-h-screen pb-10">
+            <div className="flex justify-center min-h-screen pb-10 mx-5">
                 <div className="w-full max-w-2xl">
                     <h1 className={`text-3xl font-bold text-center mb-10 dark:text-white text-black mt-10`}>Courses</h1>
                     <div className="grid grid-cols-1 gap-4">
                         {coursesList.map((course) => (
-                            <div key={course._id} className={`dark:bg-[#171A23] bg-[#D4DDFF] shadow p-4 rounded-lg`}>
-                                <h2 className={`text-xl font-bold dark:text-white text-black`}>{course.name}</h2>
-                                <p className="text-sm text-gray-500">Credit: {course.credit}</p>
-                                <p className="text-sm text-gray-500">Code: {course.code}</p>
-                                <p className="text-sm text-gray-500">Department: {course.department}</p>
-                                <p className="text-sm text-gray-500">Faculty: {course.faculty}</p>
-                                <p className="text-sm text-gray-500">Email: {course.facultyEmail}</p>
-                                <p className="text-sm text-gray-500">Description: {course.description}</p>
-                                <p className="text-sm text-gray-500">Schedule: {course.schedule}</p>
-                            </div>
+                            <CoursesCard key={course._id} course={course} />
                         ))}
                     </div>
                 </div>
