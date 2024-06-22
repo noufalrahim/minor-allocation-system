@@ -43,12 +43,7 @@ export default function DetailsCard(
             { label: "SGPA 1", value: studentData.sgpaS1 },
             { label: "SGPA 2", value: studentData.sgpaS2 },
         ])
-        setIsInitialRender(false);
     }, []);
-
-    if(isInititalRender) {
-        return;
-    }
 
     if(studentData === null) {
         return;

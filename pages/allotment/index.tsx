@@ -57,7 +57,6 @@ export default function Allotment() {
         isAlloted: false,
         result: ''
     });
-    const [isInititalRender, setIsInitialRender] = useState(true);
 
     const fetchUserData = async () => {
         setLoading(true);
@@ -108,7 +107,6 @@ export default function Allotment() {
     React.useEffect(() => {
         fetchCoursesData();
         fetchUserData();
-        setIsInitialRender(false);
     }, []);
 
     const [allotedCourse, setAllotedCourse] = useState({
@@ -200,7 +198,7 @@ export default function Allotment() {
     }
 
 
-    if (loading || isInititalRender) {
+    if (loading) {
         return (
             <div className={`dark:bg-[#1A202C]`}>
                 <Navbar />
@@ -247,14 +245,6 @@ export default function Allotment() {
     return (
         <div className={`dark:bg-[#1A202C]`}>
             <Navbar />
-            <h1 className='text-white'>f'jqi
-                wfpqwofp
-                oqjw
-                f[ojwq
-                f[ojqw[fj[qwo
-                fjwq[f[wj[f
-                qwpfqw]pf[pw[wqj[fopjqw[fjqw[fpjqw]]]]]]]]]]]]
-            </h1>
             <div className='min-h-screen flex flex-col items-center'>
                 {
                     renderItem()
