@@ -7,12 +7,14 @@ import { loggedInUser } from "@/AppConstants";
 interface DetailsCardProps {
     handleConfirm: () => void;
     studentData: any;
+    verified: boolean;
 }
 
 export default function DetailsCard(
     {
         handleConfirm,
-        studentData
+        studentData,
+        verified
     }: DetailsCardProps
 ) {
 
@@ -43,7 +45,8 @@ export default function DetailsCard(
             { label: "SGPA 1", value: studentData.sgpaS1 },
             { label: "SGPA 2", value: studentData.sgpaS2 },
         ])
-    }, []);
+        
+    }, [studentData]);
 
     if(studentData === null) {
         return;
@@ -76,8 +79,8 @@ export default function DetailsCard(
                     </div>
                 </div>
                 <div className="w-full items-center justify-center mt-5 flex">
-                    <button className="bg-[#4E7396] px-5 py-2 mb-5 w-24 text-center flex items-center justify-center rounded-md" onClick={handleConfirm}>
-                        Confirm
+                    <button disabled={verified} className={`${verified ? "bg-[#8e9092c8]" : "bg-[#4E7396]"}` + " px-5 py-2 mb-5 w-24 text-center flex items-center justify-center rounded-md"} onClick={handleConfirm}>
+                        {verified ? "Confirmed" : "Confirm"}
                     </button>
                 </div>
             </>

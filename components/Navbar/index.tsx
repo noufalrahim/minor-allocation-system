@@ -20,6 +20,7 @@ export default function Navbar() {
             }
 
             const savedNav = localStorage.getItem('selectedNav') || 'courses';
+            // const savedNav = 'courses';
             setSelectedNav(savedNav);
         }
     }, []);

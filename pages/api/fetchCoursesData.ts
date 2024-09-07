@@ -3,7 +3,7 @@ import axios from "axios";
 
 const fetchCoursesData = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const response = await axios.get("https://minor-nitc-server.onrender.com/minors");
+        const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/minors`);
         const data = response.data;
         res.status(200).json(data);
     } catch (error) {  
