@@ -195,6 +195,16 @@ export default function Allotment() {
 
   const renderComponent = () => {
     switch (timeline) {
+      case "notStarted":
+        if (studentData === null) return <LoadingSpinner />;
+        return (
+          <div className="w-full min-h-screen pb-20 flex items-center justify-center">
+            <p className="dark:text-white text-black">
+              Minor allocation not started yet
+            </p>
+          </div>
+        );
+
       case "verification":
         if (studentData === null) return <LoadingSpinner />;
         return (
@@ -203,6 +213,16 @@ export default function Allotment() {
             studentData={studentData}
             verified={verified}
           />
+        );
+
+      case "verificationEnd":
+        if (studentData === null) return <LoadingSpinner />;
+        return (
+          <div className="w-full min-h-screen pb-20 flex items-center justify-center">
+            <p className="dark:text-white text-black">
+              Data verification period has end. Choice Filling not started
+            </p>
+          </div>
         );
 
       case "choiceFilling":
@@ -222,6 +242,16 @@ export default function Allotment() {
             setLoading={(value: boolean) => setLoading(value)}
             selectedCourses={selectedCourses}
           />
+        );
+
+      case "choiceFillingEnd":
+        if (studentData === null) return <LoadingSpinner />;
+        return (
+          <div className="w-full min-h-screen pb-20 flex items-center justify-center">
+            <p className="dark:text-white text-black">
+              Choice Filling process finished. Result has not published
+            </p>
+          </div>
         );
     }
   };
@@ -284,9 +314,11 @@ export default function Allotment() {
       } else if (!loading) {
         return (
           <>
-            <div className="my-10">
-              <Stepper activeStep={activeStep} />
-            </div>
+            {(timeline == "verification" || timeline == "choiceFilling") && (
+              <div className="my-10">
+                <Stepper activeStep={activeStep} />
+              </div>
+            )}
             {renderComponent()}
           </>
         );
