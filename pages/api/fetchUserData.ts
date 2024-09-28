@@ -3,7 +3,7 @@ import axios from "axios";
 
 const fetchUserData = async (req: NextApiRequest, res: NextApiResponse) => {
     try{
-        const response = await axios.get(`https://minor-nitc-server.onrender.com/students/student/${req.query.id}`);
+        const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/students/student/${req.query.id}`);
         const data = response.data;
         console.log(data);
         res.status(200).json(data);

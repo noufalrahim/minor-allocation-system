@@ -5,6 +5,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import { loggedInUser } from "@/AppConstants";
+import { BASE_URL } from "@/AppConstants";
+import { useSelector } from "react-redux";
 
 interface ConfirmAllotmentProps {
     loading: boolean;
@@ -38,10 +40,12 @@ export default function ConfirmAllotment({
         progress: undefined,
     });
 
+    const userId = useSelector((state: any) => state.auth.userId);
+
     const handleConfirm = async () => {
         setLoading(true);
         try{
-            const response = await axios.patch(`https://minor-nitc-server.onrender.com/students/student/${loggedInUser}/choices`, {
+            const response = await axios.patch(`${BASE_URL}/students/student/${userId}/choices`, {
                 choices: selectedCourses.map(course => course._id)
             });
             console.log(response);
@@ -55,7 +59,6 @@ export default function ConfirmAllotment({
                 setTimeout(() => {
                     declineNotify();
                 }, 300);
-
             }
         }
         catch(error){
