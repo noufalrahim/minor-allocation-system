@@ -1,6 +1,6 @@
 import { loggedInUser } from "@/AppConstants";
 import CoursesCard from "@/components/Cards/CoursesCard";
-import ConfirmAllotment from "@/components/ConfirmAllotment";
+import ConfirmAllotment from "@/components/ConfirmChoices";
 import DetailsCard from "@/components/DetailsCard";
 import DragAndDrop from "@/components/DragAndDrop";
 import Footer from "@/components/Footer";
@@ -8,14 +8,12 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import Navbar from "@/components/Navbar";
 import Stepper from "@/components/Stepper";
 import axios, { all } from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import { BASE_URL } from "@/AppConstants";
-import { time } from "console";
 
 export default function Allotment() {
-  const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(true);
   const [activeStep, setActiveStep] = useState(0);
   const [verified, setVerified] = useState(false);
@@ -67,7 +65,8 @@ export default function Allotment() {
     setLoading(true);
     try {
       console.log("logged in user: ", userId);
-      const response = await axios.get(`/api/fetchUserData?id=${userId}`);
+      const loggedInUserId = await localStorage.getItem('userId');
+      const response = await axios.get(`/api/fetchUserData?id=${loggedInUserId}`);
       const data = response.data;
       if (data.choices.length > 0) {
         setIsUserChosenAllotment(true);
@@ -111,9 +110,10 @@ export default function Allotment() {
   };
 
   const [timeline, setTimeline] = React.useState("loading");
+  const [allChoices, setAllChoices] = React.useState([]);
 
   type TimelineData = {
-    stage: string; // Adjust the type according to your actual data structure
+    stage: string; 
   };
 
   React.useEffect(() => {
@@ -124,6 +124,7 @@ export default function Allotment() {
         const data: TimelineData = await response.json();
         console.log("stage is ", data.stage);
         setTimeline(data.stage);
+        // setTimeline("choiceFilling");
 
         switch (timeline) {
           case "verification":
@@ -181,7 +182,7 @@ export default function Allotment() {
 
   const [selectedCourses, setSelectedCourses] = useState([]);
 
-  console.log(selectedCourses);
+  console.log("selected courses: ", selectedCourses);
 
   const handleNext = () => {
     if (selectedCourses.length === 0) {
@@ -192,6 +193,24 @@ export default function Allotment() {
       setChoiceStatus("filled");
     }
   };
+
+  const fetchChoices = async () => {
+    const studentLogginId = await localStorage.getItem('userId');
+    console.log("userId: ", studentLogginId);
+    try {
+      const response = await axios.get(`/api/fetchAllChoices?id=${studentLogginId}`);
+      const data = response.data;
+      console.log("Data : .....",data); 
+      setAllChoices(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    console.log("fetching choices");
+    fetchChoices();
+  }, []);
 
   const renderComponent = () => {
     switch (timeline) {
@@ -247,10 +266,11 @@ export default function Allotment() {
       case "choiceFillingEnd":
         if (studentData === null) return <LoadingSpinner />;
         return (
-          <div className="w-full min-h-screen pb-20 flex items-center justify-center">
+          <div className="w-full min-h-screen pb-20 flex flex-col items-center justify-center">
             <p className="dark:text-white text-black">
               Choice Filling process finished. Result has not published
             </p>
+            
           </div>
         );
     }
@@ -305,10 +325,23 @@ export default function Allotment() {
     } else {
       if (isUserChosenAllotment && !loading) {
         return (
-          <div className="w-full min-h-screen pb-20 flex items-center justify-center">
-            <p className="dark:text-white text-black">
-              You have already chosen your allotment!
+          <div className="w-full min-h-screen pb-20 flex flex-col items-center justify-center">
+            <p className="dark:text-white text-black mb-5">
+              You have already chosen your preferences!
             </p>
+            {allChoices.length > 0 && (
+              <div className="w-full flex flex-col gap-4 items-center justify-center">
+                <p className="dark:text-white text-black text-center">
+                  Your Choices:
+                </p>
+                <div className="min-w-1/2 grid grid-cols-1 gap-4">
+                 
+                {allCourses.map((course: any, index: number) => (
+                  <CoursesCard key={index} course={course} />
+                ))}
+                </div>
+              </div>
+            )}
           </div>
         );
       } else if (!loading) {

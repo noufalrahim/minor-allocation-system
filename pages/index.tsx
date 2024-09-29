@@ -60,12 +60,24 @@ export default function Home() {
 
         console.log("student id is ", data.studentId)
         dispatch(setUserId({ userId: data.studentId }));
+        localStorage.setItem("userId", data.studentId);
         router.push("/courses");
       }
     };
 
     verifyDetails();
   }, [authData]);
+
+  React.useEffect(() => {
+    const isUserLoggedIn = async () => {
+      const userId = localStorage.getItem("userId");
+      if (userId) {
+        router.push("/courses");
+      }
+    };
+
+    isUserLoggedIn();
+  }, []);
 
   return (
     <div

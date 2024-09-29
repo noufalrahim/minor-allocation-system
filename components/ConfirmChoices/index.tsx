@@ -1,26 +1,26 @@
 import { useState } from "react";
 import LoadingSpinner from "../LoadingSpinner";
-import AllotmentCard from "../Cards/AllotmentCard";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import { loggedInUser } from "@/AppConstants";
 import { BASE_URL } from "@/AppConstants";
 import { useSelector } from "react-redux";
+import PreferenceCard from "../Cards/ChoicesCard";
 
-interface ConfirmAllotmentProps {
+interface ConfirmPreferencesProps {
     loading: boolean;
     setLoading: any;
     selectedCourses: any[];
 }
 
-export default function ConfirmAllotment({
+export default function ConfirmPreferences({
     loading,
     setLoading,
     selectedCourses
-}: ConfirmAllotmentProps) {
+}: ConfirmPreferencesProps) {
 
-    const confirmNotify = () => toast("Allotment Confirmed!", {
+    const confirmNotify = () => toast("Preferences Confirmed!", {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -30,7 +30,7 @@ export default function ConfirmAllotment({
         progress: undefined,
     });
 
-    const declineNotify = () => toast.error("Allotment Failed!", {
+    const declineNotify = () => toast.error("Preferences Failed!", {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -41,6 +41,8 @@ export default function ConfirmAllotment({
     });
 
     const userId = useSelector((state: any) => state.auth.userId);
+    console.log("User ID");
+    console.log(userId);
 
     const handleConfirm = async () => {
         setLoading(true);
@@ -76,7 +78,7 @@ export default function ConfirmAllotment({
                     <div className="flex flex-col gap-4 my-5">
                         {
                             selectedCourses.map((course, index) => (
-                                <AllotmentCard key={index} course={course} />
+                                <PreferenceCard key={index} course={course} />
                             ))
                         }
                     </div>
@@ -84,7 +86,7 @@ export default function ConfirmAllotment({
                 <div className="w-full">
                     <button className="bg-[#4E7396] w-full py-3 justify-center items-center flex text-white font-bold" onClick={handleConfirm}>
                         {
-                            loading ? <LoadingSpinner /> : 'Confirm Allotment'
+                            loading ? <LoadingSpinner /> : 'Confirm Preferences'
                         }
                     </button>
                 </div>

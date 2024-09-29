@@ -55,17 +55,23 @@ export default function Navbar() {
                         </p>
                     </div>
                 </Link>
-                <Link href='/allotment'>
-                    <div onClick={() => handleNavChange('allotment')}>
-                        <p className={`text-xl cursor-pointer ${selectedNav === 'allotment' ? `text-[#4E7396]` : 'dark:text-white text-black'}`}>
-                            Allotment
+                <Link href='/choices'>
+                    <div onClick={() => handleNavChange('choices')}>
+                        <p className={`text-xl cursor-pointer ${selectedNav === 'choices' ? `text-[#4E7396]` : 'dark:text-white text-black'}`}>
+                            Choices
                         </p>
                     </div>
                 </Link>
             </div>
-            <div className="text-center mr-10">
+            <div className="text-center mr-10 flex flex-row items-center justify-center">
                 <button onClick={toggleDarkMode}>
                     {darkMode ? <FaMoon color="white" size={24}/> : <FaSun color={'#E69B05'} size={24}/>}
+                </button>
+                <button className="ml-5" onClick={() => {
+                    localStorage.clear();
+                    window.location.href = '/';
+                }}>
+                    <p className="text-xl dark:text-white text:black">Logout</p>
                 </button>
             </div>
         </nav>

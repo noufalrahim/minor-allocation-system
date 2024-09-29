@@ -1,5 +1,5 @@
 import { useState } from "react";
-import AllotmentCard from "../Cards/AllotmentCard";
+import PreferenceCard from "../Cards/ChoicesCard";
 
 interface DragAndDropProps {
     allCourses: any[];
@@ -67,12 +67,10 @@ export default function DragAndDrop({
         const widget = JSON.parse(event.dataTransfer.getData('widget'));
 
         if (source === 'widgets') {
-            // setAllCourses([...allCourses, widget]);
             allCourses.push(widget);
             const sortedAllCourses = allCourses.sort((a, b) => a.id - b.id);
             setAllCourses(sortedAllCourses);
 
-            console.log("Dropped course", widget.name);
             const updatedWidgets = widgets.filter((course) => course.name !== widget.name);
             setWidgets(updatedWidgets);
         }
@@ -83,13 +81,73 @@ export default function DragAndDrop({
         event.preventDefault();
     }
 
+    function moveWidgetUp(index: number) {
+        if (index === 0) return;
+        const updatedWidgets = [...widgets];
+        const temp = updatedWidgets[index - 1];
+        updatedWidgets[index - 1] = updatedWidgets[index];
+        updatedWidgets[index] = temp;
+        setWidgets(updatedWidgets);
+    }
+
+    function moveWidgetDown(index: number) {
+        if (index === widgets.length - 1) return;
+        const updatedWidgets = [...widgets];
+        const temp = updatedWidgets[index + 1];
+        updatedWidgets[index + 1] = updatedWidgets[index];
+        updatedWidgets[index] = temp;
+        setWidgets(updatedWidgets);
+    }
+
     return (
         <div className={`dark:bg-[#1A202C] p-4 flex-col lg:flex-row md:flex-row xl:flex-row 2xl:flex-row flex justify-center gap-10 min-h-[35rem] h-full w-full lg:w-[55rem] xl:w-w-[55rem] md:w-[55rem] 2xl:w-[55rem]`}>
+            <div
+                className="w-full min-h-96 h-full mb-20"
+                onDrop={handleCourseDrop}
+                onDragOver={handleDragOver}
+            >
+                <p className="dark:text-[#808080] text-black text-center italic align-middle mb-5">
+                    All Courses
+                </p>
+                <div className="flex flex-col dark:bg-gray-800 bg-[#A4B8FF] h-96 overflow-y-auto shadow-xl">
+                    {allCourses.map((widget: any, index: any) => (
+                        <div
+                            key={index}
+                            className="dark:bg-[#1F2937] bg-[#A4B8FF] px-2 py-2 text-white cursor-pointer"
+                            draggable
+                            onDragStart={(e) => handleOnDragStart(e, widget, index)}
+                        >
+                            <PreferenceCard
+                                course={widget}
+                                showRightIcon={true}
+                                showLeftIcon={false}
+                                onRightIconClick={() => {
+                                    setWidgets([...widgets, widget]);
+                                    const newAllCourses = allCourses.filter((course) => course.name !== widget.name);
+                                    setAllCourses(newAllCourses);
+                                }}
+                                showDownIcon={false}
+                                showUpIcon={false}
+                            />
+                        </div>
+                    ))}
+                    {allCourses.length === 0 && (
+                        <div className="flex justify-center items-center h-full">
+                            <p className="dark:text-[#808080] text-white text-center italic align-middle">
+                                No courses left
+                            </p>
+                        </div>
+                    )}
+                </div>
+            </div>
             <div
                 className="w-full min-h-96 h-full"
                 onDrop={handleOnDrop}
                 onDragOver={handleDragOver}
             >
+                <p className="dark:text-[#808080] text-black text-center italic align-middle mb-5">
+                    Your Choices
+                </p>
                 <div className="flex flex-col dark:bg-gray-800 bg-[#A4B8FF] h-96 overflow-y-auto shadow-xl">
                     {widgets.length > 0 ? (
                         widgets.map((widget: any, index: any) => (
@@ -101,17 +159,21 @@ export default function DragAndDrop({
                                 onDrop={(e) => handleWidgetDrop(e, index)}
                                 onDragOver={(e) => e.preventDefault()}
                             >
-                                <AllotmentCard
+                                <PreferenceCard
                                     course={widget}
-                                    showRightIcon={true}
-                                    showLeftIcon={false}
-                                    onRightIconClick={() => {
+                                    showRightIcon={false}
+                                    showLeftIcon={true}
+                                    onLeftIconClick={() => {
                                         allCourses.push(widget);
                                         const newAllCourses = allCourses.sort((a, b) => a.id - b.id);
                                         setAllCourses(newAllCourses);
                                         const updatedWidgets = widgets.filter((course) => course.name !== widget.name);
                                         setWidgets(updatedWidgets);
                                     }}
+                                    showUpIcon={index === 0 ? false : true}
+                                    showDownIcon={index === widgets.length - 1 ? false : true}
+                                    onUpClick={() => moveWidgetUp(index)}
+                                    onDownClick={() => moveWidgetDown(index)}
                                 />
                             </div>
                         ))
@@ -122,7 +184,7 @@ export default function DragAndDrop({
                             </p>
                         </div>
                     )}
-                    
+
                 </div>
                 {
                     widgets.length > 0 && (
@@ -139,40 +201,6 @@ export default function DragAndDrop({
                         </div>
                     )
                 }
-            </div>
-            <div
-                className="w-full min-h-96 h-full mb-20" 
-                onDrop={handleCourseDrop}
-                onDragOver={handleDragOver}
-            >
-                <div className="flex flex-col dark:bg-gray-800 bg-[#A4B8FF] h-96 overflow-y-auto shadow-xl">
-                    {allCourses.map((widget: any, index: any) => (
-                        <div
-                            key={index}
-                            className="dark:bg-[#1F2937] bg-[#A4B8FF] px-2 py-2 text-white cursor-pointer"
-                            draggable
-                            onDragStart={(e) => handleOnDragStart(e, widget, index)}
-                        >
-                            <AllotmentCard
-                                course={widget}
-                                showRightIcon={false}
-                                showLeftIcon={true}
-                                onLeftIconClick={() => {
-                                    setWidgets([...widgets, widget]);
-                                    const newAllCourses = allCourses.filter((course) => course.name !== widget.name);
-                                    setAllCourses(newAllCourses);
-                                }}
-                            />
-                        </div>
-                    ))}
-                    {allCourses.length === 0 && (
-                        <div className="flex justify-center items-center h-full">
-                            <p className="dark:text-[#808080] text-white text-center italic align-middle">
-                                No courses left
-                            </p>
-                        </div>
-                    )}
-                </div>
             </div>
         </div>
     );
