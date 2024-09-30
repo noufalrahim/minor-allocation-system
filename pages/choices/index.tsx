@@ -1,4 +1,3 @@
-import { loggedInUser } from "@/AppConstants";
 import CoursesCard from "@/components/Cards/CoursesCard";
 import ConfirmAllotment from "@/components/ConfirmChoices";
 import DetailsCard from "@/components/DetailsCard";
@@ -19,7 +18,17 @@ export default function Allotment() {
   const [verified, setVerified] = useState(false);
   const [choiceStatus, setChoiceStatus] = useState("notFilled");
 
-  const userId = useSelector((state: any) => state.auth.userId);
+  let userId = useSelector((state: any) => state.auth.userId);
+
+  React.useEffect(() => {
+    if (userId == null || userId == undefined || userId == "" || userId.length == 0) {
+      userId = localStorage.getItem('userId');
+      if(userId == null || userId == undefined || userId == "" || userId.length == 0) {
+        window.location.href = "/";
+      }
+    }
+  }, []);
+
   console.log(userId);
 
   const informNotify = () =>

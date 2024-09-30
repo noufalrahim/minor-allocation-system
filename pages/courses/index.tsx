@@ -37,6 +37,10 @@ export default function Courses() {
 
   React.useEffect(() => {
     fetchCoursesData();
+    const userId = localStorage.getItem('userId');
+    if(userId == null || userId == undefined || userId == "" || userId.length == 0) {
+      window.location.href = "/";
+    }
   }, []);
 
   if (isLoading) {
