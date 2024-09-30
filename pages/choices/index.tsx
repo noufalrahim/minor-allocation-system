@@ -345,7 +345,7 @@ export default function Allotment() {
                 </p>
                 <div className="min-w-1/2 grid grid-cols-1 gap-4">
                  
-                {allCourses.map((course: any, index: number) => (
+                {allChoices.map((course: any, index: number) => (
                   <CoursesCard key={index} course={course} />
                 ))}
                 </div>
