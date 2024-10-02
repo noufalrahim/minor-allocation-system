@@ -27,7 +27,6 @@ export default function Courses() {
     try {
       const response = await axios.get("/api/fetchCoursesData");
       const data = response.data;
-      console.log(data);
       setCoursesList(data);
       setIsLoading(false);
     } catch (error) {

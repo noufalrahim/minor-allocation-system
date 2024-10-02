@@ -3,12 +3,13 @@ import axios from "axios";
 
 const fetchUserData = async (req: NextApiRequest, res: NextApiResponse) => {
     try{
-        const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/students/student/${req.query.id}`);
+        const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/students/student/${req.query.id}`,{
+            headers: {
+                authorization: req.headers.authorization
+        }});
         const data = response.data;
-        console.log(data);
         res.status(200).json(data);
     }catch(error){
-        console.error(error);
         res.status(500).json({ message: "Internal server error" });
     }
 }

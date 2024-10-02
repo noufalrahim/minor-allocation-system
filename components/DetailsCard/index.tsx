@@ -18,8 +18,6 @@ export default function DetailsCard(
     }: DetailsCardProps
 ) {
 
-    console.log(studentData);
-    const [isInititalRender, setIsInitialRender] = React.useState(true);
 
     const [fields, setFields] = React.useState([
         { label: "Name", value: "" },

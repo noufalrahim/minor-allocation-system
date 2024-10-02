@@ -7,7 +7,6 @@ const fetchCoursesData = async (req: NextApiRequest, res: NextApiResponse) => {
         const data = response.data;
         res.status(200).json(data);
     } catch (error) {  
-        console.log(error);
         res.status(500).json({ message: "Internal server error" });
     }
 }

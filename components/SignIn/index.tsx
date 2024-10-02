@@ -12,7 +12,6 @@ export default function SignIn({setAuthData}: SignInProps){
 
     const handleClick = () => {
         signInWithPopup(auth, provider).then((result) => {
-            console.log("Result: ", result.user);
             setAuthData({
                 email: result.user.email,
                 name: result.user.displayName,

@@ -14,30 +14,12 @@ export default function Home() {
 
   const router = useRouter();
 
-  console.log(authData);
-
-  const postUserAuthData = async () => {
-    try {
-      const response = await fetch("/api/postUserAuthData", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(authData),
-      });
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const dispatch = useDispatch();
 
   React.useEffect(() => {
     const verifyDetails = async () => {
       if (authData.email !== "") {
-        console.log("hello noobies")
         const response = await fetch("/api/postUserAuthData", {
           method: "POST",
           headers: {
@@ -46,8 +28,6 @@ export default function Home() {
           body: JSON.stringify(authData),
         });
         const data = await response.json();
-        console.log(data);
-        console.log(response.status);
         if (response.status === 404) {
           alert("User not found");
           return;
@@ -58,8 +38,13 @@ export default function Home() {
           return;
         }
 
-        console.log("student id is ", data.studentId)
+        if(!data.success){
+          alert("User not found");
+          return;
+        }
+
         dispatch(setUserId({ userId: data.studentId }));
+        localStorage.setItem("accessToken", data.token);
         localStorage.setItem("userId", data.studentId);
         router.push("/courses");
       }

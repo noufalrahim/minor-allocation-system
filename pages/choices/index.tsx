@@ -7,10 +7,11 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import Navbar from "@/components/Navbar";
 import Stepper from "@/components/Stepper";
 import axios, { all } from "axios";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import { BASE_URL } from "@/AppConstants";
+import { headers } from "next/headers";
 
 export default function Allotment() {
   const [loading, setLoading] = useState(true);
@@ -29,7 +30,6 @@ export default function Allotment() {
     }
   }, []);
 
-  console.log(userId);
 
   const informNotify = () =>
     toast.info("Please select atleast one course!", {
@@ -67,22 +67,25 @@ export default function Allotment() {
   const [isUserChosenAllotment, setIsUserChosenAllotment] = useState(false);
   const [userAlloted, setUserAlloted] = useState({
     isAlloted: false,
-    result: "",
+    result: "", 
   });
 
   const fetchUserData = async () => {
     setLoading(true);
     try {
-      console.log("logged in user: ", userId);
       const loggedInUserId = await localStorage.getItem('userId');
-      const response = await axios.get(`/api/fetchUserData?id=${loggedInUserId}`);
+      const accessToken = localStorage.getItem('accessToken');
+      const response = await axios.get(`/api/fetchUserData?id=${loggedInUserId}`,{
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
       const data = response.data;
       if (data.choices.length > 0) {
         setIsUserChosenAllotment(true);
       } else {
         setIsUserChosenAllotment(false);
       }
-      console.log(data.enrolled);
       if (data.enrolled != "none") {
         setUserAlloted({
           isAlloted: true,
@@ -109,7 +112,6 @@ export default function Allotment() {
     try {
       const response = await axios.get("/api/fetchCoursesData");
       const data = response.data;
-      console.log(data);
       setAllCourses(data);
     } catch (error) {
       console.log(error);
@@ -127,13 +129,10 @@ export default function Allotment() {
 
   React.useEffect(() => {
     const getTimeline = async () => {
-      console.log("function running");
       try {
         const response = await fetch(`${BASE_URL}/students/timeline`);
         const data: TimelineData = await response.json();
-        console.log("stage is ", data.stage);
         setTimeline(data.stage);
-        // setTimeline("choiceFilling");
 
         switch (timeline) {
           case "verification":
@@ -174,7 +173,6 @@ export default function Allotment() {
         `${BASE_URL}/minors/minor/${userAlloted.result}`
       );
       const data = response.data;
-      console.log(data);
       setAllotedCourse(data);
       setLoading(false);
     } catch (error) {
@@ -191,7 +189,6 @@ export default function Allotment() {
 
   const [selectedCourses, setSelectedCourses] = useState([]);
 
-  console.log("selected courses: ", selectedCourses);
 
   const handleNext = () => {
     if (selectedCourses.length === 0) {
@@ -204,20 +201,24 @@ export default function Allotment() {
   };
 
   const fetchChoices = async () => {
+    console.log("Fetching Choices");
     const studentLogginId = await localStorage.getItem('userId');
-    console.log("userId: ", studentLogginId);
+    const accessToken = localStorage.getItem('accessToken');
     try {
-      const response = await axios.get(`/api/fetchAllChoices?id=${studentLogginId}`);
+      const response = await axios.get(`/api/fetchAllChoices?id=${studentLogginId}`,{
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
       const data = response.data;
-      console.log("Data : .....",data); 
+      console.log("Response: ", response);
       setAllChoices(data);
     } catch (error) {
-      console.error(error);
+      console.log("e")
     }
   }
 
   useEffect(() => {
-    console.log("fetching choices");
     fetchChoices();
   }, []);
 
@@ -279,7 +280,6 @@ export default function Allotment() {
             <p className="dark:text-white text-black">
               Choice Filling process finished. Result has not published
             </p>
-            
           </div>
         );
     }
@@ -292,13 +292,18 @@ export default function Allotment() {
     //   setActiveStep(activeStep + 1);
     //   setStep(step + 1);
     // }, 1000);
-
+    const loggedInUser = localStorage.getItem('userId');
+    const accessToken = localStorage.getItem('accessToken');
     const response = await fetch(
-      `${BASE_URL}/students/student/${userId}/verify`,
+      `${BASE_URL}/students/student/${loggedInUser}/verify`,
       {
         method: "PATCH",
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
       }
     );
+
 
     if (response.status === 200) {
       alert("Successfully verified");

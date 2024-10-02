@@ -20,6 +20,8 @@ export default function ConfirmPreferences({
     selectedCourses
 }: ConfirmPreferencesProps) {
 
+    const [isConfirmed, setIsConfirmed] = useState(false);
+
     const confirmNotify = () => toast("Preferences Confirmed!", {
         position: "top-right",
         autoClose: 2000,
@@ -30,7 +32,7 @@ export default function ConfirmPreferences({
         progress: undefined,
     });
 
-    const declineNotify = () => toast.error("Preferences Failed!", {
+    const declineNotify = () => toast.error("Failed to confirm Preferences!", {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -41,32 +43,46 @@ export default function ConfirmPreferences({
     });
 
     const userId = useSelector((state: any) => state.auth.userId);
-    console.log("User ID");
-    console.log(userId);
 
     const handleConfirm = async () => {
         setLoading(true);
+        const accessToken = localStorage.getItem("accessToken");
         try{
             const response = await axios.patch(`${BASE_URL}/students/student/${userId}/choices`, {
-                choices: selectedCourses.map(course => course._id)
-            });
-            console.log(response);
+                choices: selectedCourses.map(course => course._id),
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        );
+            console.log("Response: ", response);
             if(response.status === 200 && response.data){
                 setLoading(false);
                 setTimeout(() => {
                     confirmNotify();
                 }, 300);
+                setIsConfirmed(true);
             }else{
+                console.log("Failed to confirm preferences");
+                alert("Failed to confirm preferences");
                 setLoading(false);
                 setTimeout(() => {
                     declineNotify();
                 }, 300);
+
+                setIsConfirmed(false);
             }
         }
         catch(error){
             console.log(error);
             setLoading(false);
-            declineNotify();
+            setTimeout(() => {
+                declineNotify();
+            }, 300);
+
+            setIsConfirmed(false);
         }
     }
 
@@ -84,9 +100,11 @@ export default function ConfirmPreferences({
                     </div>
                 </div>
                 <div className="w-full">
-                    <button className="bg-[#4E7396] w-full py-3 justify-center items-center flex text-white font-bold" onClick={handleConfirm}>
+                    <button 
+                    disabled={isConfirmed}
+                    className="bg-[#4E7396] w-full py-3 justify-center items-center flex text-white font-bold" onClick={handleConfirm}>
                         {
-                            loading ? <LoadingSpinner /> : 'Confirm Preferences'
+                            loading ? <LoadingSpinner /> : isConfirmed ? "Confirmed" : "Confirm Preferences"
                         }
                     </button>
                 </div>

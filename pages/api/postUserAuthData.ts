@@ -6,7 +6,6 @@ const postUserAuthData = async (req: NextApiRequest, res: NextApiResponse) => {
   console.log(req.body);
   try {
     const response = await axios.post(`${BASE_URL}/auth/login`, req.body);
-    console.log(response.data);
     const data = response.data;
     res.status(200).json(data);
   } catch (error) {
