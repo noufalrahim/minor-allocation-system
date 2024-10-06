@@ -2,12 +2,14 @@ import React from 'react'
 import { FaChevronCircleDown, FaArrowLeft, FaArrowRight, FaChevronCircleUp } from 'react-icons/fa';
 
 interface PreferenceCardProps {
+    key: number
     course: {
         name: string;
         faculty: string;
         facultyEmail: string;
         description: number;
     };
+    index: number;
     showLeftIcon?: boolean;
     showRightIcon?: boolean;
     onLeftIconClick?: () => void;
@@ -19,6 +21,8 @@ interface PreferenceCardProps {
 }
 
 export default function PreferenceCard({
+    key,
+    index,
     course,
     showLeftIcon,
     showRightIcon,
@@ -47,33 +51,33 @@ export default function PreferenceCard({
                     <button onClick={onLeftIconClick}>
                         {
                             windowWidth > 766 ? (
-                                <FaArrowLeft className='dark:text-white text-black' size={12}/>
+                                <FaArrowLeft className='dark:text-white text-black w-5 h-5' size={12}/>
                             ) : (
-                                <FaChevronCircleUp className='dark:text-white text-black' size={12}/>
+                                <FaChevronCircleUp className='dark:text-white text-black w-5 h-5' size={12}/>
                             )
                         }
                     </button>
                 )
             }
             <div className='w-full flex flex-col gap-2'>
-                <p className="dark:text-white text-black text-md font-bold">{course.name}</p>
+                <p className="dark:text-white text-black text-md font-bold">{index + 1}{" . "}{course.name}</p>
                 <p className="dark:text-[#808080] text-black text-sm font-light">Faculty: {course.faculty}</p>
                 <p className="dark:text-[#808080] text-black text-sm font-light">Faculty Email: {course.facultyEmail}</p>
-                <p className="dark:text-[#808080] text-black text-sm font-light">Description: {course.description}</p>
+                {/* <p className="dark:text-[#808080] text-black text-sm font-light">Description: {course.description}</p> */}
             </div>
 
             <div className="flex flex-row justify-center items-center">
                 {
                     showUpIcon && (
                         <button onClick={onUpClick}>
-                            <FaChevronCircleUp className='dark:text-white text-black' />
+                            <FaChevronCircleUp className='dark:text-white text-black w-5 h-5' />
                         </button>
                     )
                 }
                 {
                     showDownIcon && (
                         <button onClick={onDownClick}>
-                            <FaChevronCircleDown className='dark:text-white text-black ml-1' />
+                            <FaChevronCircleDown className='dark:text-white text-black ml-1 w-5 h-5' />
                         </button>
                     )
                 }
@@ -83,9 +87,9 @@ export default function PreferenceCard({
                     <button onClick={onRightIconClick}>
                         {
                             windowWidth > 766 ? (
-                                <FaArrowRight className='dark:text-white text-black' size={12}/>
+                                <FaArrowRight className='dark:text-white text-black w-5 h-5' size={12}/>
                             ) : (
-                                <FaChevronCircleDown className='dark:text-white text-black'size={12} />
+                                <FaChevronCircleDown className='dark:text-white text-black w-5 h-5 'size={12} />
                             )
                         }
                     </button>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import LoadingSpinner from "../LoadingSpinner";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { loggedInUser } from "@/AppConstants";
 import { BASE_URL } from "@/AppConstants";
 import { useSelector } from "react-redux";
@@ -32,7 +32,7 @@ export default function ConfirmPreferences({
         progress: undefined,
     });
 
-    const declineNotify = () => toast.error("Failed to confirm Preferences!", {
+    const declineNotify = (msg: string) => toast.error(msg, {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -69,17 +69,17 @@ export default function ConfirmPreferences({
                 alert("Failed to confirm preferences");
                 setLoading(false);
                 setTimeout(() => {
-                    declineNotify();
+                    declineNotify("Failed to confirm Preferences!");
                 }, 300);
 
                 setIsConfirmed(false);
             }
         }
-        catch(error){
+        catch(error: any){
             console.log(error);
             setLoading(false);
             setTimeout(() => {
-                declineNotify();
+                declineNotify(error.response.data.message);
             }, 300);
 
             setIsConfirmed(false);
@@ -94,7 +94,7 @@ export default function ConfirmPreferences({
                     <div className="flex flex-col gap-4 my-5">
                         {
                             selectedCourses.map((course, index) => (
-                                <PreferenceCard key={index} course={course} />
+                                <PreferenceCard index = {index} key={index} course={course} />
                             ))
                         }
                     </div>

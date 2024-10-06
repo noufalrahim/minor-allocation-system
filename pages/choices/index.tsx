@@ -223,6 +223,7 @@ export default function Allotment() {
   }, []);
 
   const renderComponent = () => {
+    // timeline = "choiceFilling";
     switch (timeline) {
       case "notStarted":
         if (studentData === null) return <LoadingSpinner />;
@@ -292,6 +293,8 @@ export default function Allotment() {
     //   setActiveStep(activeStep + 1);
     //   setStep(step + 1);
     // }, 1000);
+    const returnVal = confirm('Are you sure you want to verify your details?');
+    if(!returnVal) return;
     const loggedInUser = localStorage.getItem('userId');
     const accessToken = localStorage.getItem('accessToken');
     const response = await fetch(
@@ -363,7 +366,7 @@ export default function Allotment() {
           <>
             {(timeline == "verification" || timeline == "choiceFilling") && (
               <div className="my-10">
-                <Stepper activeStep={activeStep} />
+                {/* <Stepper activeStep={activeStep} /> */}
               </div>
             )}
             {renderComponent()}

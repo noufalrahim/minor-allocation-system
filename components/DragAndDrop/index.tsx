@@ -118,6 +118,8 @@ export default function DragAndDrop({
                             onDragStart={(e) => handleOnDragStart(e, widget, index)}
                         >
                             <PreferenceCard
+                                key={index}
+                                index = {index}
                                 course={widget}
                                 showRightIcon={true}
                                 showLeftIcon={false}
@@ -154,12 +156,15 @@ export default function DragAndDrop({
                             <div
                                 className="py-2"
                                 key={index}
+
                                 draggable
                                 onDragStart={(e) => handleWidgetDragStart(e, widget, index)}
                                 onDrop={(e) => handleWidgetDrop(e, index)}
                                 onDragOver={(e) => e.preventDefault()}
                             >
                                 <PreferenceCard
+                                    key={index}
+                                    index = {index}
                                     course={widget}
                                     showRightIcon={false}
                                     showLeftIcon={true}

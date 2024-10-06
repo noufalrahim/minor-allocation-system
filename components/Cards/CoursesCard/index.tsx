@@ -15,7 +15,7 @@ export default function CoursesCard({ course }: CoursesCardProps) {
             <h2 className={`text-xl font-bold dark:text-white text-black`}>{course.name}</h2>
             <p className="text-sm text-gray-500">Faculty: {course.faculty}</p>
             <p className="text-sm text-gray-500">Email: {course.facultyEmail}</p>
-            <p className="text-sm text-gray-500">Description: {course.description}</p>
+            {/* <p className="text-sm text-gray-500">Description: {course.description}</p> */}
         </div>
     )
 }
